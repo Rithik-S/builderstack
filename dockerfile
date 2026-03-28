@@ -7,7 +7,13 @@ COPY go.mod go.sum ./
 
 RUN go mod download
 
+# Install swag CLI for generating Swagger docs
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 COPY . .
+
+# Generate Swagger docs
+RUN swag init -g cmd/api/main.go -o docs
 
 RUN go build -o main ./cmd/api/
 
