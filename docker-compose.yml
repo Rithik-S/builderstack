@@ -3,33 +3,18 @@ services:
     image: postgres:15
     container_name: builderstack_postgres
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: builderstack_user
+      POSTGRES_PASSWORD: builderstack_secret
+      POSTGRES_DB: builderstack_dev
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U builderstack_user -d builderstack_dev"]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  app:
-    build: .
-    container_name: builderstack_app
-    ports:
-      - "8080:8080"
-    environment:
-      DB_HOST: db
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_SSLMODE: ${DB_SSLMODE}
-    depends_on:
-      db:
-        condition: service_healthy
 
 volumes:
   postgres_data:
