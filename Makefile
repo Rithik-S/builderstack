@@ -13,7 +13,7 @@ db-logs:
 
 # Development
 dev:
-	go run .
+	go run ./cmd/api/
 
 # Setup (first time)
 setup:

@@ -1,4 +1,6 @@
-// Handles /api/users endpoint to fetch and return all users as JSON
+// Package handlers contains HTTP handlers for all API endpoints
+// This file handles /api/users endpoint
+
 package handlers
 
 import (
@@ -9,6 +11,9 @@ import (
 	"builderstack-backend/internal/models"
 )
 
+// GetUsersHandler returns all users from the database
+// Route: GET /api/users
+// NOTE: This should be protected and not expose password_hash
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := database.DB.Query(`
 		SELECT id, name, email, location, age_group, profession, gender, role, created_at

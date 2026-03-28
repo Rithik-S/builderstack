@@ -1,5 +1,5 @@
 # Stage 1: Build the Go application
-FROM golang:1.23-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o main .
+RUN go build -o main ./cmd/api/
 
 # Stage 2: Run the application
 FROM alpine:latest

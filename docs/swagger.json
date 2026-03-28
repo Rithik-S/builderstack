@@ -1,0 +1,310 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "AI-powered software discovery platform API",
+        "title": "BuilderStack API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Returns server running status",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "Server is running",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tools": {
+            "get": {
+                "description": "Get all tools from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tools"
+                ],
+                "summary": "List all tools",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Tool"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch tools",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new tool in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tools"
+                ],
+                "summary": "Create a tool",
+                "parameters": [
+                    {
+                        "description": "Tool to create",
+                        "name": "tool",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Tool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tool"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON or missing required fields",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create tool",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/{id}": {
+            "get": {
+                "description": "Get a single tool by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tools"
+                ],
+                "summary": "Get tool by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tool ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tool"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid tool ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Tool not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Database error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a tool by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tools"
+                ],
+                "summary": "Update a tool",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tool ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated tool data",
+                        "name": "tool",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Tool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tool"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID or JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Tool not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Slug already exists",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update tool",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a tool by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tools"
+                ],
+                "summary": "Delete a tool",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tool ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tool deleted successfully",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid tool ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Tool not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete tool",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Tool": {
+            "type": "object",
+            "properties": {
+                "active_users_count": {
+                    "type": "integer"
+                },
+                "affiliate_link": {
+                    "type": "string"
+                },
+                "budget_level": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_sponsored": {
+                    "type": "boolean"
+                },
+                "launched_year": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pricing_model": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "short_description": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "supported_os": {
+                    "type": "string"
+                },
+                "website_link": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

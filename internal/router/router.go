@@ -1,33 +1,44 @@
 package router
 
 import (
-	"net/http"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"builderstack-backend/internal/handlers"
 )
 
-// Setup creates and configures the router with all API routes
-//
-// Route structure:
-//
-//	/api
-//	├── /tools
-//	│   ├── GET  /           - List all tools
-//	│   └── GET  /:id        - Get tool by ID
-//	└── /users
-//	    └── GET  /           - List all users
-func Setup() *http.ServeMux {
-	mux := http.NewServeMux()
+func Setup() *chi.Mux {
+	r := chi.NewRouter()
 
-	// Health check
-	mux.HandleFunc("/", handlers.HomeHandler)
+	// Middleware
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
-	// Tool routes
-	mux.HandleFunc("/api/tools", handlers.GetToolsHandler)
-	mux.HandleFunc("/api/tools/", handlers.GetToolByIDHandler)
+	// Swagger UI - MUST be before other routes
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
-	// User routes
-	mux.HandleFunc("/api/users", handlers.GetUsersHandler)
+	// Health check - use exact path, not catch-all
+	r.Get("/health", handlers.HomeHandler)
 
-	return mux
+	// API routes
+	r.Route("/api", func(r chi.Router) {
+
+		// Tool routes
+		r.Route("/tools", func(r chi.Router) {
+			r.Get("/", handlers.GetToolsHandler)
+			r.Get("/{id}", handlers.GetToolByIDHandler)
+			r.Post("/", handlers.CreateToolHandler)
+			r.Put("/{id}", handlers.UpdateToolHandler)
+			r.Delete("/{id}", handlers.DeleteToolHandler)
+		})
+
+		// User routes
+		r.Route("/users", func(r chi.Router) {
+			r.Get("/", handlers.GetUsersHandler)
+		})
+
+	})
+
+	return r
 }
