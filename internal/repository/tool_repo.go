@@ -1,50 +1,169 @@
-// Package repository handles database operations.
-//
-// This file contains all database queries for tools.
-// Repositories are the ONLY place where SQL queries should exist.
-//
-// This separation allows:
-// - Easy testing with mock databases
-// - Switching databases without changing business logic
-// - Clear SQL organization
 package repository
 
-// ToolRepository handles tool database operations
-type ToolRepository struct {
-	// TODO: Add database connection
+import (
+	"database/sql"
+
+	"builderstack-backend/internal/database"
+	"builderstack-backend/internal/models"
+)
+
+// GetAllTools returns all tools from database
+func GetAllTools() ([]models.Tool, error) {
+	rows, err := database.DB.Query(`
+		SELECT id, name, slug, short_description, category,
+		       pricing_model, budget_level, rating, active_users_count,
+		       supported_os, website_link, affiliate_link,
+		       is_sponsored, launched_year
+		FROM tools
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tools []models.Tool
+
+	for rows.Next() {
+		var tool models.Tool
+		err := rows.Scan(
+			&tool.ID,
+			&tool.Name,
+			&tool.Slug,
+			&tool.ShortDescription,
+			&tool.Category,
+			&tool.PricingModel,
+			&tool.BudgetLevel,
+			&tool.Rating,
+			&tool.ActiveUsersCount,
+			&tool.SupportedOS,
+			&tool.WebsiteLink,
+			&tool.AffiliateLink,
+			&tool.IsSponsored,
+			&tool.LaunchedYear,
+		)
+		if err != nil {
+			return nil, err
+		}
+		tools = append(tools, tool)
+	}
+
+	return tools, nil
 }
 
-// NewToolRepository creates a new ToolRepository
-func NewToolRepository() *ToolRepository {
-	return &ToolRepository{}
+// GetToolByID returns a single tool by ID
+func GetToolByID(id int) (*models.Tool, error) {
+	var tool models.Tool
+
+	err := database.DB.QueryRow(`
+		SELECT id, name, slug, short_description, category,
+		       pricing_model, budget_level, rating, active_users_count,
+		       supported_os, website_link, affiliate_link,
+		       is_sponsored, launched_year
+		FROM tools
+		WHERE id = $1
+	`, id).Scan(
+		&tool.ID,
+		&tool.Name,
+		&tool.Slug,
+		&tool.ShortDescription,
+		&tool.Category,
+		&tool.PricingModel,
+		&tool.BudgetLevel,
+		&tool.Rating,
+		&tool.ActiveUsersCount,
+		&tool.SupportedOS,
+		&tool.WebsiteLink,
+		&tool.AffiliateLink,
+		&tool.IsSponsored,
+		&tool.LaunchedYear,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil // Not found, but not an error
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &tool, nil
 }
 
-// FindAll returns all tools from database
-func (r *ToolRepository) FindAll() {
-	// SQL: SELECT * FROM tools
+// CreateTool inserts a new tool and returns it with ID
+func CreateTool(tool *models.Tool) error {
+	query := `
+		INSERT INTO tools (
+			name, slug, short_description, category,
+			pricing_model, budget_level, rating, active_users_count,
+			supported_os, website_link, affiliate_link,
+			is_sponsored, launched_year
+		)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+		RETURNING id
+	`
+
+	return database.DB.QueryRow(
+		query,
+		tool.Name,
+		tool.Slug,
+		tool.ShortDescription,
+		tool.Category,
+		tool.PricingModel,
+		tool.BudgetLevel,
+		tool.Rating,
+		tool.ActiveUsersCount,
+		tool.SupportedOS,
+		tool.WebsiteLink,
+		tool.AffiliateLink,
+		tool.IsSponsored,
+		tool.LaunchedYear,
+	).Scan(&tool.ID)
 }
 
-// FindByID returns a single tool
-func (r *ToolRepository) FindByID(id int) {
-	// SQL: SELECT * FROM tools WHERE id = $1
+// UpdateTool updates an existing tool
+func UpdateTool(id int, tool *models.Tool) error {
+	query := `
+		UPDATE tools
+		SET name = $1,
+		    slug = $2,
+		    short_description = $3,
+		    category = $4,
+		    pricing_model = $5,
+		    budget_level = $6,
+		    rating = $7,
+		    active_users_count = $8,
+		    supported_os = $9,
+		    website_link = $10,
+		    affiliate_link = $11,
+		    is_sponsored = $12,
+		    launched_year = $13
+		WHERE id = $14
+		RETURNING id
+	`
+
+	return database.DB.QueryRow(
+		query,
+		tool.Name,
+		tool.Slug,
+		tool.ShortDescription,
+		tool.Category,
+		tool.PricingModel,
+		tool.BudgetLevel,
+		tool.Rating,
+		tool.ActiveUsersCount,
+		tool.SupportedOS,
+		tool.WebsiteLink,
+		tool.AffiliateLink,
+		tool.IsSponsored,
+		tool.LaunchedYear,
+		id,
+	).Scan(&tool.ID)
 }
 
-// FindByCategory returns tools in a category
-func (r *ToolRepository) FindByCategory(category string) {
-	// SQL: SELECT * FROM tools WHERE category = $1
-}
-
-// Create inserts a new tool
-func (r *ToolRepository) Create() {
-	// SQL: INSERT INTO tools (...) VALUES (...)
-}
-
-// Update modifies an existing tool
-func (r *ToolRepository) Update(id int) {
-	// SQL: UPDATE tools SET ... WHERE id = $1
-}
-
-// Delete removes a tool
-func (r *ToolRepository) Delete(id int) {
-	// SQL: DELETE FROM tools WHERE id = $1
+// DeleteTool deletes a tool by ID, returns rows affected
+func DeleteTool(id int) (int64, error) {
+	result, err := database.DB.Exec("DELETE FROM tools WHERE id = $1", id)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
