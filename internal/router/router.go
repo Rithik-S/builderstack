@@ -6,6 +6,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"builderstack-backend/internal/handlers"
+	customMiddleware "builderstack-backend/internal/middleware"
 )
 
 func Setup() *chi.Mux {
@@ -15,27 +16,45 @@ func Setup() *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// Swagger UI - MUST be before other routes
+	// Swagger UI
 	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
-	// Health check - use exact path, not catch-all
+	// Health check
 	r.Get("/health", handlers.HomeHandler)
 
 	// API routes
 	r.Route("/api", func(r chi.Router) {
 
-		// Tool routes
-		r.Route("/tools", func(r chi.Router) {
-			r.Get("/", handlers.GetToolsHandler)
-			r.Get("/{id}", handlers.GetToolByIDHandler)
-			r.Post("/", handlers.CreateToolHandler)
-			r.Put("/{id}", handlers.UpdateToolHandler)
-			r.Delete("/{id}", handlers.DeleteToolHandler)
-		})
+		// ===== PUBLIC ROUTES (No auth required) =====
 
-		// User routes
-		r.Route("/users", func(r chi.Router) {
-			r.Get("/", handlers.GetUsersHandler)
+		// Auth routes
+		r.Post("/auth/register", handlers.RegisterHandler)
+		r.Post("/auth/login", handlers.LoginHandler)
+
+		// Public tool routes (anyone can view)
+		r.Get("/tools", handlers.GetToolsHandler)
+		r.Get("/tools/{id}", handlers.GetToolByIDHandler)
+
+		// ===== PRIVATE ROUTES (Auth required) =====
+		r.Group(func(r chi.Router) {
+			r.Use(customMiddleware.AuthMiddleware)
+
+			// User routes
+			r.Get("/users/me", handlers.GetCurrentUserHandler)
+			r.Post("/auth/logout", handlers.LogoutHandler)
+
+			// ===== ADMIN ONLY ROUTES =====
+			r.Group(func(r chi.Router) {
+				r.Use(customMiddleware.AdminMiddleware)
+
+				// Tool management (admin only)
+				r.Post("/tools", handlers.CreateToolHandler)
+				r.Put("/tools/{id}", handlers.UpdateToolHandler)
+				r.Delete("/tools/{id}", handlers.DeleteToolHandler)
+
+				// User management (admin only)
+				r.Get("/users", handlers.GetUsersHandler)
+			})
 		})
 
 	})
