@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"builderstack-backend/internal/constants"
 	"builderstack-backend/internal/models"
 	"builderstack-backend/internal/repository"
 	"builderstack-backend/internal/utils"
@@ -73,7 +74,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Name:         registration.Name,
 		Email:        registration.Email,
 		PasswordHash: hashedPassword,
-		Role:         "user", // Default role
+		Role:         constants.RoleUser, // Default role
 	}
 
 	// ===== STEP 6: Save to database =====

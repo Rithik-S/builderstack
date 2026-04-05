@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 
+	"builderstack-backend/internal/constants"
 	"builderstack-backend/internal/utils"
 )
 
@@ -18,7 +19,7 @@ func AdminMiddleware(next http.Handler) http.Handler {
 		}
 
 		// Check if admin
-		if claims.Role != "admin" {
+		if claims.Role != constants.RoleAdmin {
 			http.Error(w, "Admin access required", http.StatusForbidden)
 			return
 		}
