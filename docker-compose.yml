@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:15
-    container_name: builderstack_postgres
+    container_name: builderstack_db
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -10,27 +10,54 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./builderstack-backend/migrations:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - builderstack_network
 
-  app:
-    build: .
-    container_name: builderstack_app
+  backend:
+    build:
+      context: ./builderstack-backend
+      dockerfile: Dockerfile
+    container_name: builderstack_backend
     ports:
       - "8080:8080"
     environment:
       DB_HOST: db
+      DB_PORT: "5432"
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      DB_SSLMODE: ${DB_SSLMODE}
+      DB_SSLMODE: disable
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       db:
         condition: service_healthy
+    restart: on-failure
+    networks:
+      - builderstack_network
+
+  frontend:
+    build:
+      context: ./builderstack-frontend
+      dockerfile: Dockerfile
+    container_name: builderstack_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: http://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - builderstack_network
 
 volumes:
   postgres_data:
+
+networks:
+  builderstack_network:
+    driver: bridge
