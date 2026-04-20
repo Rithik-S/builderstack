@@ -24,7 +24,7 @@ INSERT INTO tools (name, slug, short_description, category, pricing_model, budge
 ('Retool',           'retool',           'Low-code platform for building internal tools and dashboards',        'Low-Code',        'freemium',  'high',   4.6,   300000, 'all',     'https://retool.com',                '',  false, 2017),
 ('Sentry',           'sentry',           'Application monitoring platform for error tracking and performance',  'Monitoring',      'freemium',  'medium', 4.7,  4000000, 'all',     'https://sentry.io',                 '',  false, 2010);
 
--- Seed users (password_hash is a placeholder bcrypt hash for "password123")
+-- Seed users (password_hash is a placeholder - won't work for login)
 INSERT INTO users (name, email, password_hash, location, age_group, profession, gender, role, created_at) VALUES
 ('Alice Nguyen',    'alice@example.com',   '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'San Francisco, CA', '25-34', 'Frontend Developer',  'female', 'user',  NOW() - INTERVAL '120 days'),
 ('Bob Martinez',    'bob@example.com',     '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Austin, TX',        '35-44', 'DevOps Engineer',     'male',   'user',  NOW() - INTERVAL '90 days'),
@@ -34,5 +34,5 @@ INSERT INTO users (name, email, password_hash, location, age_group, profession, 
 ('Frank Li',        'frank@example.com',   '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Toronto, CA',       '35-44', 'Engineering Manager',  'male',   'user',  NOW() - INTERVAL '20 days'),
 ('Grace Okonkwo',   'grace@example.com',   '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Lagos, NG',         '18-24', 'Student',             'female', 'user',  NOW() - INTERVAL '15 days'),
 ('Henry Park',      'henry@example.com',   '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Seoul, KR',         '25-34', 'Mobile Developer',    'male',   'user',  NOW() - INTERVAL '10 days'),
-('Isla Brown',      'isla@example.com',    '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Sydney, AU',        '35-44', 'Data Engineer',       'female', 'user',  NOW() - INTERVAL '5 days'),
-('Admin User',      'admin@builderstack.com', '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Remote',         '25-34', 'Platform Admin',      'other',  'admin', NOW() - INTERVAL '200 days');
+('Isla Brown',      'isla@example.com',    '$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'Sydney, AU',        '35-44', 'Data Engineer',       'female', 'user',  NOW() - INTERVAL '5 days')
+ON CONFLICT (email) DO NOTHING;
