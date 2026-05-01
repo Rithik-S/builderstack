@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS tools (
     name               VARCHAR(255)   NOT NULL,
     slug               VARCHAR(255)   NOT NULL UNIQUE,
     short_description  TEXT,
+    long_description   TEXT,
     category           VARCHAR(100),
     pricing_model      VARCHAR(50),
     budget_level       VARCHAR(50),
