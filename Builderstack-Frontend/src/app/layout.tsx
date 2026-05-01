@@ -1,7 +1,6 @@
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
-import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
+import LayoutShell from '@/components/LayoutShell';
 
 export const metadata = {
   title: 'BuilderStack - No-Code Adviser',
@@ -11,13 +10,15 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#0a0a0a] text-white">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ minHeight: '100vh', background: 'var(--bone)', color: 'var(--ink)' }}>
         <AuthProvider>
-          <Navbar />
-          <div className="flex h-[calc(100vh-64px)]">
-            <Sidebar />
-            <main className="flex-1 p-8">{children}</main>
-          </div>
+          <LayoutShell>{children}</LayoutShell>
         </AuthProvider>
       </body>
     </html>

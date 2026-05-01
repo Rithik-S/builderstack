@@ -27,7 +27,7 @@ export default function AdminDashboard() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">
-          🔧 <span className="gradient-text">Admin Dashboard</span>
+          <span className="gradient-text">Admin Dashboard</span>
         </h1>
         <button 
           onClick={() => router.push('/')}

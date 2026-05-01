@@ -1,0 +1,65 @@
+/* ============================================================
+   BuilderStack — Cool Premium palette
+   Override layer on top of colors_and_type.css for the new
+   chat-first experience. Deep navy + ivory + electric cobalt.
+   ============================================================ */
+
+:root {
+  /* Core surfaces — replacing the warm bone palette */
+  --bone:        #F5F3EE;   /* ivory canvas (slightly cool)      */
+  --bone-2:      #ECE9E1;   /* deeper ivory for chips/wells      */
+  --bone-3:      #E2DED3;   /* deepest ivory                     */
+  --ink:         #0A1628;   /* deep navy-ink, near-black         */
+  --ink-2:       #142442;   /* secondary dark surface             */
+  --graphite:    #D6D2C7;   /* hairline rules on light            */
+  --graphite-2:  #9A9588;   /* darker hairline / muted text       */
+  --graphite-d:  #1F2D45;   /* hairline rules on dark             */
+
+  /* Accent shift: amber → electric cobalt */
+  --amber:       #1F4FFF;   /* electric cobalt                    */
+  --amber-deep:  #1538C8;   /* hover/press cobalt                 */
+  --amber-tint:  #E0E8FF;   /* faint cobalt wash                  */
+
+  /* Secondary anchor: navy refined */
+  --navy:        #0A1628;
+  --navy-2:      #142442;
+
+  /* Foreground text */
+  --fg-1:        #0A1628;
+  --fg-2:        #2E3A52;
+  --fg-3:        #5C6376;
+  --fg-on-dark:  #F5F3EE;
+  --fg-on-dark-2:#A8B0C2;
+
+  --ok:          #1E6B4F;
+  --warn:        #B6791F;
+  --err:         #B22222;
+
+  /* Stamps recolored to navy not ink */
+  --stamp-1:     2px 2px 0 0 #0A1628;
+  --stamp-2:     4px 4px 0 0 #0A1628;
+  --stamp-amber: 2px 2px 0 0 #1F4FFF;
+
+  /* Medal colors — premium tones (kept across themes) */
+  --medal-gold:    #C8A24A;
+  --medal-silver:  #B5B5B0;
+  --medal-bronze:  #A36B3D;
+}
+
+/* ── Override stamp shadow to use the new ink ── */
+.btn--amber {
+  background: var(--amber);
+  color: var(--bone);
+  border-color: var(--ink);
+}
+.btn--amber:hover { background: var(--amber-deep); color: var(--bone); }
+
+/* Selection */
+::selection { background: var(--amber); color: var(--bone); }
+
+/* Tag override — cobalt accent variant */
+.tag--amber {
+  background: var(--amber-tint);
+  border-color: var(--amber);
+  color: var(--amber-deep);
+}
