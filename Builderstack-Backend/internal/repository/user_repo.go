@@ -58,11 +58,19 @@ func GetUserByEmail(email string) (*models.User, error) {
 		return nil, err
 	}
 
-	// Convert NullString to string
-	user.Location = location.String
-	user.AgeGroup = ageGroup.String
-	user.Profession = profession.String
-	user.Gender = gender.String
+	// Convert NullString to *string (pointer)
+	if location.Valid {
+		user.Location = &location.String
+	}
+	if ageGroup.Valid {
+		user.AgeGroup = &ageGroup.String
+	}
+	if profession.Valid {
+		user.Profession = &profession.String
+	}
+	if gender.Valid {
+		user.Gender = &gender.String
+	}
 
 	return &user, nil
 }
@@ -99,11 +107,19 @@ func GetUserByID(id int) (*models.User, error) {
 		return nil, err
 	}
 
-	// Convert NullString to string
-	user.Location = location.String
-	user.AgeGroup = ageGroup.String
-	user.Profession = profession.String
-	user.Gender = gender.String
+	// Convert NullString to *string (pointer)
+	if location.Valid {
+		user.Location = &location.String
+	}
+	if ageGroup.Valid {
+		user.AgeGroup = &ageGroup.String
+	}
+	if profession.Valid {
+		user.Profession = &profession.String
+	}
+	if gender.Valid {
+		user.Gender = &gender.String
+	}
 
 	return &user, nil
 }

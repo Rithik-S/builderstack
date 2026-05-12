@@ -1,1 +1,21 @@
+# Node
+node_modules/
+.next/
 .env
+.env.local
+
+# Go
+*.exe
+*.dll
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

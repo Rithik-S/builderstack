@@ -1,0 +1,385 @@
+/* =============================================================
+   BuilderStack Design System — colors, type, spacing, motion.
+   Single source of truth. Import this file before anything else.
+
+   Fonts are loaded from Google Fonts via the <link> tag in
+   each HTML file's <head>. See README.md for the substitution
+   note — these are the canonical families:
+     - Display:  Instrument Serif
+     - Body/UI:  Geist
+     - Mono:     JetBrains Mono
+   ============================================================= */
+
+:root {
+  /* -------------------------------------------------------------
+     1. COLOR — base palette
+     ------------------------------------------------------------- */
+  --bone:        #F4EFE6;   /* paper canvas (default bg)         */
+  --bone-2:      #EBE5D8;   /* slightly deeper paper for chips   */
+  --bone-3:      #E0D9C7;   /* deepest paper, for inset wells    */
+  --ink:         #0F0F0F;   /* deep near-black, slight warm bias */
+  --ink-2:       #1C1C1C;   /* secondary dark surface            */
+  --graphite:    #C9C2B2;   /* hairline rules on light           */
+  --graphite-2:  #A89F8B;   /* darker hairline / muted text      */
+  --graphite-d:  #2A2A2A;   /* hairline rules on dark            */
+
+  /* Single brand accent — construction amber. Used sparingly. */
+  --amber:       #F26A1F;
+  --amber-deep:  #C8531A;   /* hover/press state for amber       */
+  --amber-tint:  #FBE4D2;   /* faint amber wash for highlights   */
+
+  /* Secondary anchor — blueprint navy. Headings on dark. */
+  --navy:        #0E2A47;
+  --navy-2:      #1A3D63;
+
+  /* Text on each surface */
+  --fg-1:        #0F0F0F;   /* primary text on bone              */
+  --fg-2:        #3A3A3A;   /* secondary text                    */
+  --fg-3:        #6A6557;   /* tertiary / meta on bone           */
+  --fg-on-dark:  #F4EFE6;   /* primary text on ink/navy          */
+  --fg-on-dark-2:#B8B2A4;   /* secondary on dark                 */
+
+  /* Semantic — minimal, no rainbow */
+  --ok:          #2C6E3F;   /* a deep, paper-friendly green      */
+  --warn:        #B6791F;   /* mustard, never yellow             */
+  --err:         #B22222;   /* deep red, no neon                 */
+
+  /* -------------------------------------------------------------
+     2. TYPE — families
+     ------------------------------------------------------------- */
+  --font-display: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+  --font-sans:    "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* TYPE — scale (raw sizes in px, line-heights unitless) */
+  --fs-display-1: 96px;     --lh-display-1: 0.95;
+  --fs-display-2: 72px;     --lh-display-2: 1.0;
+  --fs-display-3: 56px;     --lh-display-3: 1.05;
+  --fs-h1:        40px;     --lh-h1:        1.1;
+  --fs-h2:        30px;     --lh-h2:        1.2;
+  --fs-h3:        22px;     --lh-h3:        1.3;
+  --fs-h4:        18px;     --lh-h4:        1.4;
+  --fs-body:      17px;     --lh-body:      1.55;
+  --fs-body-sm:   15px;     --lh-body-sm:   1.5;
+  --fs-caption:   13px;     --lh-caption:   1.45;
+  --fs-overline:  11px;     --lh-overline:  1.0;
+  --fs-mono:      14px;     --lh-mono:      1.5;
+  --fs-mono-sm:   12px;     --lh-mono-sm:   1.4;
+
+  /* -------------------------------------------------------------
+     3. SPACING — 8pt scale, generous defaults
+     ------------------------------------------------------------- */
+  --s-0:  0;
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;     /* default gutter */
+  --s-7:  32px;
+  --s-8:  40px;
+  --s-9:  48px;
+  --s-10: 64px;     /* default section break */
+  --s-11: 80px;
+  --s-12: 96px;
+  --s-13: 128px;
+  --s-14: 160px;
+
+  /* Layout */
+  --w-canvas:   1280px;
+  --w-content:  920px;       /* readable column                  */
+  --w-narrow:   640px;       /* prose column                     */
+  --gutter:     96px;        /* desktop side gutter              */
+  --gutter-md:  48px;
+  --gutter-sm:  24px;
+
+  /* -------------------------------------------------------------
+     4. RADII — sharp corners are part of the brand
+     ------------------------------------------------------------- */
+  --r-0: 0;
+  --r-1: 2px;       /* inputs, small chips                       */
+  --r-2: 4px;       /* avatars, tool logos                       */
+
+  /* -------------------------------------------------------------
+     5. BORDERS
+     ------------------------------------------------------------- */
+  --hair:        1px solid var(--graphite);
+  --hair-strong: 1px solid var(--ink);
+  --hair-dark:   1px solid var(--graphite-d);
+
+  /* -------------------------------------------------------------
+     6. SHADOWS — hard-stamped, no soft blurs
+     ------------------------------------------------------------- */
+  --stamp-1: 2px 2px 0 0 var(--ink);
+  --stamp-2: 4px 4px 0 0 var(--ink);
+  --stamp-amber: 2px 2px 0 0 var(--amber);
+
+  /* -------------------------------------------------------------
+     7. MOTION
+     ------------------------------------------------------------- */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur:      200ms;
+  --dur-slow: 320ms;
+}
+
+/* =============================================================
+   SEMANTIC ELEMENT STYLES
+   These are sensible defaults for raw HTML inside the system.
+   Pages can override per-component.
+   ============================================================= */
+
+html {
+  background: var(--bone);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  margin: 0;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--fg-1);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); }
+h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); }
+h4 { font-size: var(--fs-h4); line-height: var(--lh-h4); font-family: var(--font-sans); font-weight: 600; letter-spacing: 0; }
+
+p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  text-wrap: pretty;
+}
+
+small, .caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--fg-3);
+}
+
+code, pre, kbd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  line-height: var(--lh-mono);
+}
+
+code {
+  background: var(--bone-2);
+  border: var(--hair);
+  padding: 1px 5px;
+  border-radius: var(--r-1);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Tabular labels — used on overlines and meta strips */
+.overline {
+  font-family: var(--font-mono);
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+/* Display utilities */
+.display-1 { font-family: var(--font-display); font-size: var(--fs-display-1); line-height: var(--lh-display-1); letter-spacing: -0.02em; font-weight: 400; }
+.display-2 { font-family: var(--font-display); font-size: var(--fs-display-2); line-height: var(--lh-display-2); letter-spacing: -0.02em; font-weight: 400; }
+.display-3 { font-family: var(--font-display); font-size: var(--fs-display-3); line-height: var(--lh-display-3); letter-spacing: -0.015em; font-weight: 400; }
+
+.mono   { font-family: var(--font-mono); font-size: var(--fs-mono); }
+.mono-sm{ font-family: var(--font-mono); font-size: var(--fs-mono-sm); }
+
+/* =============================================================
+   PAGE / SECTION CHROME
+   ============================================================= */
+.canvas {
+  max-width: var(--w-canvas);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+.hairline {
+  border: 0;
+  border-top: var(--hair);
+  margin: 0;
+}
+
+/* Section header — used at the top of every major page section */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-6);
+  padding-bottom: var(--s-4);
+  border-bottom: var(--hair);
+  margin-bottom: var(--s-8);
+}
+
+/* =============================================================
+   BUTTONS
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  padding: 12px 18px;
+  border: var(--hair-strong);
+  border-radius: var(--r-0);
+  cursor: pointer;
+  background: var(--bone);
+  color: var(--ink);
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+  text-decoration: none;
+}
+.btn:hover { background: var(--bone-2); text-decoration: none; }
+.btn:active { transform: translateY(1px); background: var(--bone-3); }
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--bone);
+  border-color: var(--ink);
+}
+.btn--primary:hover { background: var(--ink-2); }
+.btn--primary:active { background: #000; }
+
+.btn--amber {
+  background: var(--amber);
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: var(--stamp-1);
+}
+.btn--amber:hover { background: var(--amber-deep); color: var(--bone); }
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+}
+.btn--ghost:hover { background: var(--bone-2); }
+
+/* =============================================================
+   FORM FIELDS
+   ============================================================= */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.field__label {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--fg-2);
+}
+.input, .textarea, .select {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--ink);
+  background: var(--bone);
+  border: var(--hair);
+  border-radius: var(--r-1);
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color var(--dur) var(--ease);
+}
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--ink);
+}
+.input::placeholder, .textarea::placeholder {
+  color: var(--graphite-2);
+}
+
+/* =============================================================
+   CARD
+   ============================================================= */
+.card {
+  background: var(--bone);
+  border: var(--hair);
+  border-radius: var(--r-0);
+  padding: var(--s-6);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.card--interactive { cursor: pointer; }
+.card--interactive:hover {
+  border-color: var(--ink);
+  box-shadow: var(--stamp-1);
+  transform: translate(-1px, -1px);
+}
+
+/* =============================================================
+   BADGE / TAG
+   ============================================================= */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border: var(--hair);
+  border-radius: var(--r-1);
+  background: var(--bone-2);
+  color: var(--fg-2);
+}
+.tag--amber { background: var(--amber-tint); border-color: var(--amber); color: var(--amber-deep); }
+.tag--dark  { background: var(--ink); border-color: var(--ink); color: var(--bone); }
+
+/* =============================================================
+   DOTTED GRID BACKGROUND
+   Apply .grid-paper to a section to get a subtle graph-paper bg.
+   ============================================================= */
+.grid-paper {
+  background-image: radial-gradient(circle at 1px 1px, rgba(15,15,15,0.10) 1px, transparent 0);
+  background-size: 16px 16px;
+}
+
+/* Dark surface */
+.surface-ink {
+  background: var(--ink);
+  color: var(--fg-on-dark);
+}
+.surface-ink h1, .surface-ink h2, .surface-ink h3, .surface-ink p { color: var(--fg-on-dark); }
+.surface-ink .overline { color: var(--fg-on-dark-2); }
+.surface-ink .hairline, .surface-ink .section-header { border-color: var(--graphite-d); }
+
+.surface-navy {
+  background: var(--navy);
+  color: var(--fg-on-dark);
+}
+.surface-navy h1, .surface-navy h2, .surface-navy h3, .surface-navy p { color: var(--fg-on-dark); }

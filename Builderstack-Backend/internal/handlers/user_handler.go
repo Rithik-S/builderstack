@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -13,22 +14,13 @@ import (
 
 // GetCurrentUserHandler returns the logged-in user's profile
 // Route: GET /api/users/me
-// @Summary      Get current user
-// @Description  Get the logged-in user's profile
-// @Tags         users
-// @Produce      json
-// @Success      200  {object}  models.User
-// @Failure      401  {string}  string  "Unauthorized"
-// @Router       /users/me [get]
 func GetCurrentUserHandler(w http.ResponseWriter, r *http.Request) {
-	// Get user from context (put there by AuthMiddleware)
 	claims, ok := r.Context().Value(middleware.UserContextKey).(*utils.Claims)
 	if !ok || claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	// Get full user from database
 	user, err := repository.GetUserByID(claims.UserID)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
@@ -39,14 +31,12 @@ func GetCurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return user
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
 
 // GetUsersHandler returns all users from the database
 // Route: GET /api/users
-// NOTE: This should be admin only
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := database.DB.Query(`
 		SELECT id, name, email, location, age_group, profession, gender, role, created_at
@@ -62,14 +52,16 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var u models.User
+		var location, ageGroup, profession, gender sql.NullString
+
 		err := rows.Scan(
 			&u.ID,
 			&u.Name,
 			&u.Email,
-			&u.Location,
-			&u.AgeGroup,
-			&u.Profession,
-			&u.Gender,
+			&location,
+			&ageGroup,
+			&profession,
+			&gender,
 			&u.Role,
 			&u.CreatedAt,
 		)
@@ -77,6 +69,21 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error reading data", http.StatusInternalServerError)
 			return
 		}
+
+		// Convert NullString to *string (pointer)
+		if location.Valid {
+			u.Location = &location.String
+		}
+		if ageGroup.Valid {
+			u.AgeGroup = &ageGroup.String
+		}
+		if profession.Valid {
+			u.Profession = &profession.String
+		}
+		if gender.Valid {
+			u.Gender = &gender.String
+		}
+
 		users = append(users, u)
 	}
 

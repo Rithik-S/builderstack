@@ -18,10 +18,10 @@ type User struct {
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	PasswordHash string    `json:"-"` // Never expose in JSON
-	Location     string    `json:"location,omitempty"`
-	AgeGroup     string    `json:"age_group,omitempty"`
-	Profession   string    `json:"profession,omitempty"`
-	Gender       string    `json:"gender,omitempty"`
+	Location     *string   `json:"location,omitempty"`
+	AgeGroup     *string   `json:"age_group,omitempty"`
+	Profession   *string   `json:"profession,omitempty"`
+	Gender       *string   `json:"gender,omitempty"`
 	Role         string    `json:"role"` // "user", "admin"
 	CreatedAt    time.Time `json:"created_at"`
 }
