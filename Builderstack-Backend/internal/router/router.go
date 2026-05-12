@@ -34,6 +34,7 @@ func Setup() *chi.Mux {
 		// Public tool routes (anyone can view)
 		r.Get("/tools", handlers.GetToolsHandler)
 		r.Get("/tools/{id}", handlers.GetToolByIDHandler)
+		r.Get("/tools/{id}/grade", handlers.GetToolGradeHandler)
 
 		// ===== PRIVATE ROUTES (Auth required) =====
 		r.Group(func(r chi.Router) {
@@ -54,6 +55,15 @@ func Setup() *chi.Mux {
 
 				// User management (admin only)
 				r.Get("/users", handlers.GetUsersHandler)
+
+				// Scraper management (admin only)
+				r.Post("/scraper/run", handlers.RunFullScrapeHandler)
+				r.Post("/scraper/tool/{name}", handlers.RunToolScrapeHandler)
+				r.Get("/scraper/logs", handlers.GetScrapeLogsHandler)
+
+				// Grading (admin only)
+				r.Post("/grades/calculate/{toolID}", handlers.CalculateToolGradeHandler)
+				r.Post("/grades/calculate-all", handlers.CalculateAllGradesHandler)
 			})
 		})
 
